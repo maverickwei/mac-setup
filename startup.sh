@@ -35,8 +35,16 @@ node "$HOME/mac-setup/wifi-switcher/server.js" >> "$LOG" 2>&1 &
 WIFI_PID=$!
 log "Wi-Fi 切換器 PID: $WIFI_PID"
 
-# ── 4. 啟動 TradingView 監控網頁（port 3000）
+# ── 4. 確認 / 下載 Coocolab-Tradingview-MCP ──
 MCP_DIR="$HOME/Coocolab-Tradingview-MCP"
+if [ ! -d "$MCP_DIR" ]; then
+    log "找不到 Coocolab-Tradingview-MCP，自動下載中..."
+    git clone https://github.com/maverickwei/Coocolab-Tradingview-MCP.git "$MCP_DIR" >> "$LOG" 2>&1
+    cd "$MCP_DIR" && npm install >> "$LOG" 2>&1 && cd "$HOME"
+    log "下載完成"
+fi
+
+# ── 5. 啟動 TradingView 監控網頁（port 3000）
 if [ -f "$MCP_DIR/src/webhook-server.js" ]; then
     log "啟動監控網頁（port 3000）..."
     cd "$MCP_DIR"
@@ -45,7 +53,7 @@ if [ -f "$MCP_DIR/src/webhook-server.js" ]; then
     cd "$HOME"
     log "監控網頁 PID: $WEBHOOK_PID"
 
-    # ── 5. 等 port 3000 就緒後啟動 ngrok ────
+    # ── 6. 等 port 3000 就緒後啟動 ngrok ────
     log "等待 port 3000..."
     for i in $(seq 1 15); do
         nc -z localhost 3000 2>/dev/null && break
