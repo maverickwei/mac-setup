@@ -19,7 +19,9 @@ chmod +x "$SETUP_DIR/startup.sh"
 echo "✅ startup.sh 已設定執行權限"
 
 # 3. 安裝 LaunchAgent（登入時自動執行）
+mkdir -p "$HOME/Library/LaunchAgents"
 cp "$SETUP_DIR/com.zhenzen.startup.plist" "$HOME/Library/LaunchAgents/"
+launchctl unload "$HOME/Library/LaunchAgents/com.zhenzen.startup.plist" 2>/dev/null
 launchctl load "$HOME/Library/LaunchAgents/com.zhenzen.startup.plist"
 echo "✅ LaunchAgent 已安裝"
 
