@@ -4,8 +4,17 @@
 # 啟動順序：網路 → TradingView → 網頁服務 → ngrok
 # =============================================
 
+# 防止重複執行
+LOCK="/tmp/zhenzen-startup.lock"
+if [ -f "$LOCK" ]; then exit 0; fi
+touch "$LOCK"
+trap "rm -f $LOCK" EXIT
+
+# 補上 Homebrew PATH（LaunchAgent 預設 PATH 很短）
+export PATH="/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:$PATH"
+
 LOG="$HOME/mac-setup/startup.log"
-log() { echo "$(date '+%H:%M:%S')  $1" | tee -a "$LOG"; }
+log() { echo "$(date '+%H:%M:%S')  $1" >> "$LOG"; }
 
 echo "" >> "$LOG"
 log "========== 開機啟動 =========="
