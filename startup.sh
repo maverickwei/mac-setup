@@ -18,15 +18,15 @@ for i in $(seq 1 30); do
 done
 log "網路就緒"
 
-# ── 2. 啟動 TradingView Desktop ──────────────
+# ── 2. 啟動 TradingView Desktop（含 CDP port 9222）─
 log "啟動 TradingView..."
-# 先用 CDP port 啟動（讓 MCP 可以連接）
-TV_APP="/Applications/TradingView.app"
-if [ -d "$TV_APP" ]; then
-    open -a "$TV_APP" --args --remote-debugging-port=9222
+TV_EXE="/Applications/TradingView.app/Contents/MacOS/TradingView"
+if [ -f "$TV_EXE" ]; then
+    "$TV_EXE" --remote-debugging-port=9222 &
+    sleep 5
     log "TradingView 啟動（CDP port 9222）"
 else
-    log "⚠️  找不到 TradingView.app，跳過"
+    log "⚠️  找不到 TradingView 執行檔，跳過"
 fi
 
 # ── 3. 啟動 Wi-Fi 切換器（port 8765）────────
